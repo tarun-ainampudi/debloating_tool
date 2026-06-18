@@ -1,5 +1,5 @@
 #include "debloat.hpp"
-#include "cmd/exec.hpp"
+#include "../cmd/exec.hpp"
 
 namespace debloat
 {

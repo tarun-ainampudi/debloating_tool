@@ -8,8 +8,4 @@ namespace debloat
         return exec("adb shell pm list packages");
     }
 
-    string get_adb_devices()
-    {
-        return exec("adb devices");
-    }
 }

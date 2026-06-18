@@ -18,6 +18,19 @@ namespace util
                 temp += *it;
             }
         }
+        result.push_back(temp);
         return result;
+    }
+
+    string trim_string(const string &input)
+    {
+        size_t start = input.find_first_not_of(" \t\n\r\f\v");
+
+        if (start == string::npos)
+            return "";
+
+        size_t end = input.find_last_not_of(" \t\n\r\f\v");
+
+        return input.substr(start, end - start + 1);
     }
 }

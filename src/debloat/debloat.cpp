@@ -58,9 +58,14 @@ namespace debloat
         return get_packages("adb shell pm list packages -e");
     }
 
+    unordered_set<string> get_installed_packages()
+    {
+        return get_packages("adb shell pm list packages");
+    }
+
     unordered_set<string> get_uninstalled_packages()
     {
-        return util::uset_difference(get_all_packages(), get_enabled_packages());
+        return util::uset_difference(get_all_packages(), get_installed_packages());
     }
 
     void install_existing_pkgs(const char *pkgs)

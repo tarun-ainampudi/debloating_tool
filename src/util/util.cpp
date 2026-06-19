@@ -33,4 +33,32 @@ namespace util
 
         return input.substr(start, end - start + 1);
     }
+
+    unordered_set<string>
+    uset_difference(const unordered_set<string> &a,
+                    const unordered_set<string> &b)
+    {
+        unordered_set<string> res;
+        if (a.size() > b.size())
+        {
+            for (const auto &i : a)
+            {
+                if (b.find(i) == b.end())
+                {
+                    res.insert(i);
+                }
+            }
+        }
+        else
+        {
+            for (const auto &i : b)
+            {
+                if (a.find(i) == a.end())
+                {
+                    res.insert(i);
+                }
+            }
+        }
+        return res;
+    }
 }

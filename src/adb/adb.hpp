@@ -11,11 +11,9 @@ namespace adb
 {
     struct Device
     {
-        string serial;
-        string state;
+        string Serial;
+        string State;
     };
 
     vector<Device> get_adb_devices();
-
-    vector<Device> parse_adb_devices(const char *devices_string);
 }

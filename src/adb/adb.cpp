@@ -6,12 +6,6 @@
 namespace adb
 {
 
-    vector<Device> get_adb_devices()
-    {
-        string cmd_out = exec("adb devices");
-        return adb::parse_adb_devices(cmd_out.c_str());
-    }
-
     vector<Device> parse_adb_devices(const char *devices_string)
     {
         vector<string> lines = util::split_string(devices_string, '\n');
@@ -26,7 +20,7 @@ namespace adb
 
             Device device;
 
-            if (!(iss >> device.serial >> device.state))
+            if (!(iss >> device.Serial >> device.State))
             {
                 cout << "[Error] Parsing Error at parse_adb_devices\n";
                 cout << "[Debug] Line: " << lines[i] << endl;
@@ -37,6 +31,12 @@ namespace adb
         }
 
         return devices;
+    }
+
+    vector<Device> get_adb_devices()
+    {
+        string cmd_out = exec("adb devices");
+        return adb::parse_adb_devices(cmd_out.c_str());
     }
 
 }

@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#define DEBLOAT_VERSION "0.1.0"
+
 enum class Option
 {
     Install,
@@ -22,7 +24,9 @@ enum class Specifier
 
 void display_help()
 {
-    cout << R"(Usage:
+    cout << "Debloating Tool v" << DEBLOAT_VERSION <<
+        R"(
+Usage:
     debloat -u -l <pkg1,pkg2,...>
     debloat -u -f <packages.txt>
     debloat -i <app.apk>
@@ -30,6 +34,7 @@ void display_help()
 Options:
     -u, --uninstall    Uninstall packages
     -i, --install      Install APK or Existing packages
+    -v, --version      Show Version
     -h, --help         Show Usage
 
 Specifiers:
@@ -114,6 +119,18 @@ int main(int argc, char *argv[])
         else
         {
             adb::install(argv[2]);
+        }
+    }
+    else if (argc == 2)
+    {
+        string arg = argv[1];
+        if (arg == "-v" || arg == "--version")
+        {
+            cout << DEBLOAT_VERSION << endl;
+        }
+        else
+        {
+            display_help();
         }
     }
     else

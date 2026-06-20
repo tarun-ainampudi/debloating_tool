@@ -7,32 +7,29 @@
 
 namespace debloat
 {
+    string modify_package(const string &cmd, const string &pkg_name)
+    {
+        return exec((cmd + " " + pkg_name).c_str());
+    }
+
     string uninstall(const string &pkg)
     {
-        string cmd = "adb shell pm uninstall --user current ";
-        cmd += pkg;
-        return exec(cmd.c_str());
+        return modify_package("adb shell pm uninstall --user current", pkg);
     }
 
     string install_existing(const string &pkg)
     {
-        string cmd = "adb shell pm install-existing --user current ";
-        cmd += pkg;
-        return exec(cmd.c_str());
+        return modify_package("adb shell pm install-existing --user current", pkg);
     }
 
     string disable(const string &pkg)
     {
-        string cmd = "adb shell pm disable-user --user current ";
-        cmd += pkg;
-        return exec(cmd.c_str());
+        return modify_package("adb shell pm disable-user --user current", pkg);
     }
 
     string suspend(const string &pkg)
     {
-        string cmd = "adb shell pm suspend --user current ";
-        cmd += pkg;
-        return exec(cmd.c_str());
+        return modify_package("adb shell pm suspend --user current", pkg);
     }
 
     unordered_set<string> get_packages(const char *cmd)

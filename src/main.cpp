@@ -2,6 +2,7 @@
 
 #include "debloat/debloat.hpp"
 #include "adb/adb.hpp"
+#include "cmd/exec.hpp"
 
 using namespace std;
 
@@ -79,8 +80,13 @@ int main(int argc, char *argv[])
             string specified_pkgs;
             if (specifier == Specifier::File)
             {
-                // parse file to comma seprated list
-                specified_pkgs = "a,b,c";
+                string file_content = get_file_content(argv[3]);
+                for (size_t i = 0; i < file_content.size(); i++)
+                {
+                    if (file_content[i] == '\n')
+                        file_content[i] = ',';
+                }
+                specified_pkgs = file_content;
             }
             else
             {

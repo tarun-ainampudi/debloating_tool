@@ -23,6 +23,8 @@ namespace adb
 
     string uninstall(const string &pkg);
 
+    string install(const string &pkg);
+
     string install_existing(const string &pkg);
 
     string disable(const string &pkg);

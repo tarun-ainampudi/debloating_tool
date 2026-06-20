@@ -102,5 +102,23 @@ int main(int argc, char *argv[])
             }
         }
     }
+    else if (argc == 3)
+    {
+        Option option = parseOptionArg(argv);
+        if (option != Option::Install)
+        {
+            cout << "Invalid Option" << endl;
+            display_help();
+            return 0;
+        }
+        else
+        {
+            adb::install(argv[2]);
+        }
+    }
+    else
+    {
+        display_help();
+    }
     return 0;
 }

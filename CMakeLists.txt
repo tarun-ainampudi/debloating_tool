@@ -6,6 +6,7 @@ add_executable(debloat
     src/cmd/exec.cpp
     src/debloat/debloat.cpp
     src/adb/adb.cpp
+    src/adb/package.cpp
     src/util/util.cpp
 )
 add_executable(util_test

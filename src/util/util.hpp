@@ -15,4 +15,8 @@ namespace util
     unordered_set<string>
     uset_difference(const unordered_set<string> &a,
                     const unordered_set<string> &b);
+
+    unordered_set<string>
+    uset_intersection(const unordered_set<string> &a,
+                      const unordered_set<string> &b);
 }

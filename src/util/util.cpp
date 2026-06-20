@@ -39,11 +39,29 @@ namespace util
                     const unordered_set<string> &b)
     {
         unordered_set<string> res;
-        if (a.size() > b.size())
+        res.reserve(a.size());
+        for (const auto &i : a)
         {
+            if (b.find(i) == b.end())
+            {
+                res.insert(i);
+            }
+        }
+
+        return res;
+    }
+
+    unordered_set<string>
+    uset_intersection(const unordered_set<string> &a,
+                      const unordered_set<string> &b)
+    {
+        unordered_set<string> res;
+        if (a.size() < b.size())
+        {
+            res.reserve(a.size());
             for (const auto &i : a)
             {
-                if (b.find(i) == b.end())
+                if (b.find(i) != b.end())
                 {
                     res.insert(i);
                 }
@@ -51,9 +69,10 @@ namespace util
         }
         else
         {
+            res.reserve(b.size());
             for (const auto &i : b)
             {
-                if (a.find(i) == a.end())
+                if (a.find(i) != a.end())
                 {
                     res.insert(i);
                 }

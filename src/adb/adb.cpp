@@ -11,19 +11,23 @@ namespace adb
         vector<string> lines = util::split_string(devices_string, '\n');
         vector<Device> devices;
 
-        for (size_t i = 1; i < lines.size(); i++)
+        for (size_t i = 0; i < lines.size(); i++)
         {
-            if (util::trim_string(lines[i]).empty())
+            string trimmed_line = util::trim_string(lines[i]);
+            if (trimmed_line.empty() ||
+                trimmed_line == "* daemon not running; starting now at tcp:5037" ||
+                trimmed_line == "* daemon started successfully" ||
+                trimmed_line == "List of devices attached")
                 continue;
 
-            std::istringstream iss(lines[i]);
+            std::istringstream iss(trimmed_line);
 
             Device device;
 
             if (!(iss >> device.Serial >> device.State))
             {
-                cout << "[Error] Parsing Error at parse_adb_devices\n";
-                cout << "[Debug] Line: " << lines[i] << endl;
+                cout << "[Error] Parsing Error at parse_adb_devices" << endl;
+                cout << "[Debug] Line: " << trimmed_line << endl;
                 continue;
             }
 

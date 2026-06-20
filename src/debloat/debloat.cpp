@@ -65,39 +65,47 @@ namespace debloat
         return util::uset_difference(get_all_packages(), get_installed_packages());
     }
 
+    void install_existing_pkgs(const unordered_set<string> &pkgs)
+    {
+        unordered_set<string> to_install = util::uset_intersection(get_all_packages(), pkgs);
+        unordered_set<string> can_install = util::uset_difference(to_install, get_installed_packages());
+        for (const string &pkg : pkgs)
+        {
+            if (can_install.find(pkg) != can_install.end())
+                cout << "[Install Existing] " << pkg << ": " << install_existing(pkg);
+            else
+                cout << "[Install Existing] " << pkg << ": " << "Not Found or Already Installed\n";
+        }
+    }
+
     void install_existing_pkgs(const char *pkgs)
     {
-        unordered_set<string> uninstalled = get_uninstalled_packages();
-        vector<string> should_install = util::split_string(pkgs, ',');
-        for (size_t i = 0; i < should_install.size(); i++)
+        vector<string> pkgs_vec = util::split_string(pkgs, ',');
+
+        unordered_set<string> pkgs_set(
+            make_move_iterator(pkgs_vec.begin()),
+            make_move_iterator(pkgs_vec.end()));
+
+        install_existing_pkgs(pkgs_set);
+    }
+
+    void uninstall_packages(const unordered_set<string> &pkgs)
+    {
+        for (const string &pkg : pkgs)
         {
-            if (uninstalled.contains(should_install[i]))
-            {
-                cout << install_existing(should_install[i]) << endl;
-            }
-            else
-            {
-                cout << "[Install-Existing] [Not Found] " << should_install[i] << endl;
-            }
+            cout << "[Uninstall] " << pkg << ": " << uninstall(pkg);
         }
     }
 
     void uninstall_packages(const char *pkgs)
     {
-        unordered_set<string> enabled = get_enabled_packages();
-        vector<string> should_uninstall = util::split_string(pkgs, ',');
-        for (size_t i = 0; i < should_uninstall.size(); i++)
-        {
-            if (enabled.contains(should_uninstall[i]))
-            {
-                cout << "[Uninstall] " << should_uninstall[i] << endl;
-                cout << uninstall(should_uninstall[i]) << endl;
-            }
-            else
-            {
-                cout << "[Uninstall] [Not Found] " << should_uninstall[i] << endl;
-            }
-        }
+        vector<string> pkgs_vec = util::split_string(pkgs, ',');
+
+        unordered_set<string> pkgs_set(
+            make_move_iterator(pkgs_vec.begin()),
+            make_move_iterator(pkgs_vec.end()));
+
+        uninstall_packages(pkgs_set);
     }
 
 }

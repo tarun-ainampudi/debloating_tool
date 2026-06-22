@@ -1,4 +1,4 @@
-#include "../src/adb/adb.hpp"
+#include "../src/adb/device.hpp"
 
 #include <cassert>
 

@@ -2,25 +2,13 @@
 
 #include "debloat/debloat.hpp"
 #include "adb/adb.hpp"
+#include "adb/device.hpp"
 #include "cmd/exec.hpp"
+#include "cli/args.hpp"
 
 using namespace std;
 
 #define DEBLOAT_VERSION "0.1.0"
-
-enum class Option
-{
-    Install,
-    Uninstall,
-    Help,
-};
-
-enum class Specifier
-{
-    List,
-    File,
-    Null,
-};
 
 void display_help()
 {
@@ -48,94 +36,65 @@ Examples:
          << endl;
 }
 
-Option parseOptionArg(char *argv[])
+string convert_file_to_list(const char *path)
 {
-    string arg = argv[1];
-    if (arg == "-i" || arg == "--install")
-        return Option::Install;
-    if (arg == "-u" || arg == "--uninstall")
-        return Option::Uninstall;
-    return Option::Help;
-}
-
-Specifier parseSpecifierArg(char *argv[])
-{
-    string arg = argv[2];
-    if (arg == "-l" || arg == "--list")
-        return Specifier::List;
-    if (arg == "-f" || arg == "--file")
-        return Specifier::File;
-    return Specifier::Null;
+    string file_content = get_file_content(path);
+    for (size_t i = 0; i < file_content.size(); i++)
+    {
+        if (file_content[i] == '\n')
+            file_content[i] = ',';
+    }
+    return file_content;
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc == 4)
+    Arguments args = parse_arguments(argc, argv);
+
+    if (!args.parsing_status.empty())
     {
-        Option option = parseOptionArg(argv);
-        Specifier specifier = parseSpecifierArg(argv);
-        if (option == Option::Help || specifier == Specifier::Null)
-        {
-            cout << "Invalid Option or Specifier" << endl;
-            display_help();
-            return 0;
-        }
-        else
-        {
-            string specified_pkgs;
-            if (specifier == Specifier::File)
-            {
-                string file_content = get_file_content(argv[3]);
-                for (size_t i = 0; i < file_content.size(); i++)
-                {
-                    if (file_content[i] == '\n')
-                        file_content[i] = ',';
-                }
-                specified_pkgs = file_content;
-            }
-            else
-            {
-                specified_pkgs = argv[3];
-            }
-            if (option == Option::Install)
-            {
-                debloat::install_existing_pkgs(specified_pkgs.c_str());
-            }
-            else
-            {
-                debloat::uninstall_packages(specified_pkgs.c_str());
-            }
-        }
-    }
-    else if (argc == 3)
-    {
-        Option option = parseOptionArg(argv);
-        if (option != Option::Install)
-        {
-            cout << "Invalid Option" << endl;
-            display_help();
-            return 0;
-        }
-        else
-        {
-            adb::install(argv[2]);
-        }
-    }
-    else if (argc == 2)
-    {
-        string arg = argv[1];
-        if (arg == "-v" || arg == "--version")
-        {
-            cout << DEBLOAT_VERSION << endl;
-        }
-        else
-        {
-            display_help();
-        }
-    }
-    else
-    {
+        cout << "[Error] Parsing Failed: " << args.parsing_status << endl;
         display_help();
+        return 0;
     }
-    return 0;
+
+    switch (args.option)
+    {
+    case Arguments::Option::Null:
+        cout << "Invalid Option (or) Option not specified" << endl;
+        display_help();
+        return 0;
+
+    case Arguments::Option::Help:
+        display_help();
+        return 0;
+
+    case Arguments::Option::Version:
+        cout << DEBLOAT_VERSION << endl;
+        return 0;
+
+    case Arguments::Option::Install:
+        if (args.specifier == Arguments::Specifier::List)
+            debloat::install_existing_pkgs(args.specified_packages.c_str());
+        else if (args.specifier == Arguments::Specifier::File)
+        {
+            string pkgs = convert_file_to_list(args.specified_packages.c_str());
+            debloat::install_existing_pkgs(pkgs.c_str());
+        }
+        else
+            cout << "[Error] Expected Specifier: --list (or) --file";
+        return 0;
+
+    case Arguments::Option::Uninstall:
+        if (args.specifier == Arguments::Specifier::List)
+            debloat::uninstall_packages(args.specified_packages.c_str());
+        else if (args.specifier == Arguments::Specifier::File)
+        {
+            string pkgs = convert_file_to_list(args.specified_packages.c_str());
+            debloat::uninstall_packages(pkgs.c_str());
+        }
+        else
+            cout << "[Error] Expected Specifier: --list (or) --file";
+        return 0;
+    }
 }

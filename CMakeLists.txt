@@ -6,15 +6,17 @@ add_executable(debloat
     src/cmd/exec.cpp
     src/debloat/debloat.cpp
     src/adb/adb.cpp
+    src/adb/device.cpp
     src/adb/package.cpp
     src/util/util.cpp
+    src/cli/args.cpp
 )
 add_executable(util_test
     src/util/util.cpp
     tests/util_test.cpp
 )
 add_executable(adb_test
-    src/adb/adb.cpp
+    src/adb/device.cpp
     src/cmd/exec.cpp
     src/util/util.cpp
     tests/adb_test.cpp
